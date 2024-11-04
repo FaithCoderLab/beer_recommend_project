@@ -1,6 +1,6 @@
 import gradio as gr
-from code.camera import camera_on as co
-from code.custom_vision import find_drink as fd
+from camera import camera_on as co
+from custom_vision import find_drink as fd
 import numpy as np
 
 with gr.Blocks() as demo:
