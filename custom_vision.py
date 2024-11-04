@@ -4,39 +4,37 @@ from azure.cognitiveservices.vision.customvision.prediction import CustomVisionP
 from msrest.authentication import ApiKeyCredentials
 from io import BytesIO
 from PIL import Image
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # 사용자가 만든 AI 모델의 예측 기능을 사용하기 위한 endpoint 지정
-prediction_endpoint = "https://5a046customvision-prediction.cognitiveservices.azure.com"
+prediction_endpoint = os.getenv("PREDICTION_ENDPOINT")
  # KEY 값 지정
-prediction_key = "3hhcv8lZ8O9ocDydwdejP1Rvlw1biY58z0zgsDr4LLfZyuBUPUEgJQQJ99AJACYeBjFXJ3w3AAAIACOG0Z9Z"
+prediction_key = os.getenv("PREDICTION_KEY")
  # 프로젝트 ID 지정
-project_id = "0129dd02-9b71-4b9b-bc5b-0c7c636b6056"
+project_id = os.getenv("PROJECT_ID")
  # 모델명 지정
-model_name = "test"
+model_name = os.getenv("MODEL_NAME")
 
  # 앞에서 지정한 API KEY를 써서 커스텀 비전 모델을 사용할 클라이언트를 인증
 credentials = ApiKeyCredentials(in_headers={"Prediction-key": prediction_key})
  # endpoint를 써서 클라이언트 등록
 predictor = CustomVisionPredictionClient(endpoint=prediction_endpoint, credentials=credentials)
 
-# 테스트 이미지를 Codespace workspace에 추가한 후 image_file 변수로 지정
-#image_file = "images/captured_photo.jpg"
+
 
 def find_drink(image_data):
-    # 테스트 이미지를 열고 모델에 적용해서 결과를 저장
+    # 테스트 이미지를 줄이기
     max_size = (800, 800)
     image_data.thumbnail(max_size, Image.Resampling.LANCZOS)
     
+    #해당 이미지를 bytes로 바꿔줌
     buffer = BytesIO()
-    image_data.save(buffer, format="png")  # Use appropriate format (JPEG/PNG)
+    image_data.save(buffer, format="png")
     image_bytes = buffer.getvalue()
 
     results = predictor.classify_image(project_id, model_name, image_bytes)
-        # 예측한 결과를 출력
-    # for prediction in results.predictions[:2]:
-    #     print(f"Tag: {prediction.tag_name}, Probability: {prediction.probability:.2f}")
+    # 예측한 결과를 출력
     return results.predictions[0].tag_name, results.predictions[0].probability
-
-if __name__ == "__main__":
-    image_file = "images/captured_photo.jpg"
-    print(find_drink(image_file))
