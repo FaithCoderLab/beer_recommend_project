@@ -3,7 +3,26 @@ from camera import camera_on as co
 from custom_vision import find_drink as fd
 import numpy as np
 
-with gr.Blocks() as demo:
+custom_css = """
+.gradio-container {
+    font-family: 'Arial', sans-serif;
+}
+.feedback textarea {
+    font-size: 18px !important;
+    border-radius: 10px;
+}"""
+
+custom_js = """
+function addWelcomeAnimation() {
+    const welcome = document.createElement('div');
+    welcome.textContent = 'Welcome to Machulin Guide!';
+    welcome.style.fontSize = '24px';
+    welcome.style.textAlign = 'center';
+    welcome.style.marginBottom = '20px';
+    document.querySelector('.gradio-container').prepend(welcome);
+}"""
+
+with gr.Blocks(theme=gr.themes.Citrus()) as demo:
     #카메라로 사진찍기 클릭 시 카메라 창 띄워주기
     with gr.Column(scale=1, min_width=300):
         
